@@ -11,7 +11,16 @@ import CoreData
 
 class InfoTaskTableViewController: UITableViewController {
     
+    
+    @IBOutlet weak var sortByTitle: UIBarButtonItem!
+    
+    @IBOutlet weak var sortByDate: UIBarButtonItem!
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var Tasks:[Taskinfo]?
+    var items:[NSManagedObject] = []
+    var addDays = "0"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +33,25 @@ class InfoTaskTableViewController: UITableViewController {
         loadCoreData()
     }
     
+    
+    //sorting
+    
+    @IBAction func sortTitle(_ sender: UIBarButtonItem) {
+        let sortTask = self.Tasks!
+        self.Tasks! = sortTask.sorted{$0.name < $1.name}
+        self.tableView.reloadData()
+    }
+    
+    
+    @IBAction func sortDays(_ sender: UIBarButtonItem) {
+        
+        let sortDays = self.Tasks!
+        self.Tasks! = sortDays.sorted{$0.days < $1.days}
+        self.tableView.reloadData()
+    }
+    
+    
+    //core data file
     func loadCoreData() {
            Tasks = [Taskinfo]()
            // create an instance of app delegate
@@ -74,7 +102,14 @@ class InfoTaskTableViewController: UITableViewController {
             
         // Configure the cell...
                 cell?.textLabel?.text = task.name
-                cell?.detailTextLabel?.text = "\(task.days) days"
+        cell?.detailTextLabel?.text = "\(task.days) days + \(task.counter) completed days"
+        
+        if Tasks?[indexPath.row].counter == self.Tasks?[indexPath.row].days{
+            cell?.backgroundColor = UIColor.gray
+            cell?.textLabel?.text = "Completed"
+            cell?.detailTextLabel?.text = ""
+            
+        }
 
         // Configure the cell...
 
@@ -91,32 +126,81 @@ class InfoTaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let actionAdd = UITableViewRowAction(style: .normal, title: "Add Day") { (rowaction, indexPath) in
+                        print("days added")
+                        let alertcontroller = UIAlertController(title: "Add Day", message: "Enter a day for this task", preferredStyle: .alert)
+                                       
+                                       alertcontroller.addTextField { (textField ) in
+                                                       textField.placeholder = "number of days"
+                                        self.addDays = textField.text!
+                                        print(self.addDays)
+                                        
+                                           textField.text = ""
+                                        
+                                       }
+                                       let CancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                                       CancelAction.setValue(UIColor.brown, forKey: "titleTextColor")
+                                       let AddItemAction = UIAlertAction(title: "Add Item", style: .default){
+                                           (action) in
+                                        let count = alertcontroller.textFields?.first?.text
+                                        self.Tasks?[indexPath.row].counter += Int(count!) ?? 0
+                                        
+                                        if self.Tasks?[indexPath.row].counter == self.Tasks?[indexPath.row].days{
+                                            
+                                            print("equal")
+                      
+                                                    
+
+                                            }
+                                            
+                                        
+                                    
+                                        self.tableView.reloadData()
+                                        
+                                
+                            }
+                                AddItemAction.setValue(UIColor.black, forKey: "titleTextColor")
+                                                     alertcontroller.addAction(CancelAction)
+                                                     alertcontroller.addAction(AddItemAction)
+                                                     self.present(alertcontroller, animated: true, completion: nil)
+                    }
+                    actionAdd.backgroundColor = UIColor.orange
+                    
+            
+                    let actionDelete = UITableViewRowAction(style: .normal, title: "Delete") { (rowaction, indexPath) in
+                        
+                        
+                              // let taskItem = self.tasks![indexPath.row] as? NSManagedObject
+                               let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                               let ManagedContext = appDelegate.persistentContainer.viewContext
+                               let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "EntityTask")
+                        do{
+                            let task = try ManagedContext.fetch(fetchRequest)
+                            let item = task[indexPath.row] as!NSManagedObject
+                            self.Tasks?.remove(at: indexPath.row)
+                            ManagedContext.delete(item)
+                            tableView.reloadData()
+                            
+                            do{
+                                        try ManagedContext.save()
+                                }
+                        
+                            catch{
+                                               print(error)
+                                           }
+                        }
+                        catch{
+                            print(error)
+                        }
+                               
+                            
+
+                    }
+                         actionDelete.backgroundColor = UIColor.blue
+                           return [actionAdd,actionDelete]
 
        
-       let deleteaction = UITableViewRowAction(style: .normal, title: "Delete") { (rowaction, indexPath) in
-           
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                  let ManagedContext = appDelegate.persistentContainer.viewContext
-                  let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "EntityTask")
-           do{
-               let data = try ManagedContext.fetch(fetchRequest)
-               let item = data[indexPath.row] as? NSManagedObject
-               self.Tasks?.remove(at: indexPath.row)
-            ManagedContext.delete(item!)
-               tableView.reloadData()
-               do{
-                           try ManagedContext.save()
-                   }
-           catch{
-                print(error)
-            }
-           }
-           catch{
-               print(error)
-           }
-                  }
-              deleteaction.backgroundColor = UIColor.red
-              return [deleteaction]
+      
     }
     
     

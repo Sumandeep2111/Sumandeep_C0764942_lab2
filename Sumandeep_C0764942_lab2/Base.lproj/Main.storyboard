@@ -52,12 +52,29 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Add Tasks" id="Oj6-UE-uQA">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="plus" catalog="system" id="UlG-mm-Kpn">
+                        <barButtonItem key="leftBarButtonItem" title="sortTitle" id="Sx7-iE-a2G">
                             <connections>
-                                <segue destination="xZp-ec-xzT" kind="show" id="8m6-VA-OfH"/>
+                                <action selector="sortTitle:" destination="LhH-jf-NQ4" id="YM4-c7-LUS"/>
                             </connections>
                         </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" image="plus" catalog="system" id="UlG-mm-Kpn">
+                                <connections>
+                                    <segue destination="xZp-ec-xzT" kind="show" id="8m6-VA-OfH"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="sortDate" id="gDY-9L-eq2">
+                                <connections>
+                                    <action selector="sortDays:" destination="LhH-jf-NQ4" id="Fdo-i4-mGn"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="8tF-ex-cx5" id="Fpd-co-TbD"/>
+                        <outlet property="sortByDate" destination="gDY-9L-eq2" id="Ikb-wY-HaV"/>
+                        <outlet property="sortByTitle" destination="Sx7-iE-a2G" id="KfO-kH-p3a"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oXx-va-asl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -71,12 +88,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I29-nT-jhU">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="enter the tasks" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I29-nT-jhU">
                                 <rect key="frame" x="60" y="118" width="294" height="47"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XuN-Ht-VX7">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="enter number of days" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XuN-Ht-VX7">
                                 <rect key="frame" x="60" y="185" width="294" height="40"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits"/>
