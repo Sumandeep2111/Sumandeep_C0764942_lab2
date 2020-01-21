@@ -16,5 +16,5 @@ class Taskinfo {
     
     var name:String
     var days:Int
-    var counter = 0
+    var countDays = 0
 }

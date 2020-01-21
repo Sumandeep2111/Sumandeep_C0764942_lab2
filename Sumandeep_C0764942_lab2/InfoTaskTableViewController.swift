@@ -102,11 +102,11 @@ class InfoTaskTableViewController: UITableViewController {
             
         // Configure the cell...
                 cell?.textLabel?.text = task.name
-        cell?.detailTextLabel?.text = "\(task.days) days + \(task.counter) completed days"
+        cell?.detailTextLabel?.text = "\(task.days) days + \(task.countDays) (days completed)"
         
-        if Tasks?[indexPath.row].counter == self.Tasks?[indexPath.row].days{
+        if Tasks?[indexPath.row].countDays == self.Tasks?[indexPath.row].days{
             cell?.backgroundColor = UIColor.gray
-            cell?.textLabel?.text = "Completed"
+            cell?.textLabel?.text = "Task Finished"
             cell?.detailTextLabel?.text = ""
             
         }
@@ -129,9 +129,8 @@ class InfoTaskTableViewController: UITableViewController {
         let actionAdd = UITableViewRowAction(style: .normal, title: "Add Day") { (rowaction, indexPath) in
                         print("days added")
                         let alertcontroller = UIAlertController(title: "Add Day", message: "Enter a day for this task", preferredStyle: .alert)
-                                       
                                        alertcontroller.addTextField { (textField ) in
-                                                       textField.placeholder = "number of days"
+                                       textField.placeholder = "number of days"
                                         self.addDays = textField.text!
                                         print(self.addDays)
                                         
@@ -143,19 +142,14 @@ class InfoTaskTableViewController: UITableViewController {
                                        let AddItemAction = UIAlertAction(title: "Add Item", style: .default){
                                            (action) in
                                         let count = alertcontroller.textFields?.first?.text
-                                        self.Tasks?[indexPath.row].counter += Int(count!) ?? 0
+                                        self.Tasks?[indexPath.row].countDays += Int(count!) ?? 0
                                         
-                                        if self.Tasks?[indexPath.row].counter == self.Tasks?[indexPath.row].days{
+                                        if self.Tasks?[indexPath.row].countDays == self.Tasks?[indexPath.row].days{
                                             
-                                            print("equal")
-                      
-                                                    
-
-                                            }
                                             
-                                        
-                                    
-                                        self.tableView.reloadData()
+                      }
+                                            
+                            self.tableView.reloadData()
                                         
                                 
                             }
@@ -180,24 +174,20 @@ class InfoTaskTableViewController: UITableViewController {
                             self.Tasks?.remove(at: indexPath.row)
                             ManagedContext.delete(item)
                             tableView.reloadData()
-                            
-                            do{
-                                        try ManagedContext.save()
+                            do {
+                                
+                            try ManagedContext.save()
+                                
+                            }catch {
+                                print(error)
                                 }
-                        
-                            catch{
-                                               print(error)
-                                           }
-                        }
-                        catch{
-                            print(error)
-                        }
-                               
+                        }catch {
                             
-
-                    }
-                         actionDelete.backgroundColor = UIColor.blue
-                           return [actionAdd,actionDelete]
+                      print(error)
+            }
+        }
+                actionDelete.backgroundColor = UIColor.blue
+                return [actionAdd,actionDelete]
 
        
       
