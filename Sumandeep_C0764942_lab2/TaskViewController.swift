@@ -22,11 +22,11 @@ class TaskViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         saveCoreData()
-         NotificationCenter.default.addObserver(self, selector: #selector(saveCoreData), name: UIApplication.willResignActiveNotification, object: nil)
+         //NotificationCenter.default.addObserver(self, selector: #selector(saveCoreData), name: UIApplication.willResignActiveNotification, object: nil)
         // Do any additional setup after loading the view.
     }
     
-
+   
     @IBAction func addTask(_ sender: UIButton) {
                let name = nameTextfld.text ?? ""
                let days = daystextfld.text ?? ""

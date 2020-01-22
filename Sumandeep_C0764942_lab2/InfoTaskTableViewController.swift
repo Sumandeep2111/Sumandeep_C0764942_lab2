@@ -32,7 +32,7 @@ class InfoTaskTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         loadCoreData()
-        filterData = Tasks
+        filterData = Tasks!
         searchBar.delegate = self
         
     }
@@ -79,11 +79,12 @@ class InfoTaskTableViewController: UITableViewController {
            } catch {
                print(error)
            }
+        tableView.reloadData()
 
        }
 
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -132,7 +133,7 @@ class InfoTaskTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let actionAdd = UITableViewRowAction(style: .normal, title: "Add Day") { (rowaction, indexPath) in
-                        print("days added")
+                        
                         let alertcontroller = UIAlertController(title: "Add Day", message: "Enter a day for this task", preferredStyle: .alert)
                                        alertcontroller.addTextField { (textField ) in
                                        textField.placeholder = "number of days"
@@ -250,6 +251,11 @@ extension InfoTaskTableViewController: UISearchBarDelegate{
             return item.name.range(of: searchText, options: .caseInsensitive) != nil
         })
         
+        tableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        filterData = Tasks!
         tableView.reloadData()
     }
 }
