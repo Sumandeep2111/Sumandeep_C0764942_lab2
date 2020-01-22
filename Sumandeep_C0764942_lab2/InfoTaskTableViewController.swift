@@ -147,9 +147,9 @@ class InfoTaskTableViewController: UITableViewController {
                                        let AddItemAction = UIAlertAction(title: "Add Item", style: .default){
                                            (action) in
                                         let count = alertcontroller.textFields?.first?.text
-                                        self.Tasks?[indexPath.row].countDays += Int(count!) ?? 0
+                                        self.filterData?[indexPath.row].countDays += Int(count!) ?? 0
                                         
-                                        if self.Tasks?[indexPath.row].countDays == self.Tasks?[indexPath.row].days{
+                                        if self.filterData?[indexPath.row].countDays == self.filterData?[indexPath.row].days{
                                             
                                             
                       }
@@ -175,9 +175,10 @@ class InfoTaskTableViewController: UITableViewController {
                                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "EntityTask")
                         do{
                             let task = try ManagedContext.fetch(fetchRequest)
-                            let item = task[indexPath.row] as!NSManagedObject
+                            let item = task[indexPath.row] as? NSManagedObject
                             self.Tasks?.remove(at: indexPath.row)
-                            ManagedContext.delete(item)
+                            self.filterData?.remove(at: indexPath.row)
+                            ManagedContext.delete(item!)
                             tableView.reloadData()
                             do {
                                 
