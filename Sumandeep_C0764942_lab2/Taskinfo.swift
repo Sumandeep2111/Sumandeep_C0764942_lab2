@@ -9,12 +9,14 @@
 import Foundation
 
 class Taskinfo {
-    internal init(name: String, days: Int) {
+    internal init(name: String, days: Int,date:String) {
         self.name = name
         self.days = days
+        self.date = date
     }
     
     var name:String
     var days:Int
+    var date:String
     var countDays = 0
 }

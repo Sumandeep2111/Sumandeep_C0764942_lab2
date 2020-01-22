@@ -19,6 +19,7 @@ class InfoTaskTableViewController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     
     var Tasks:[Taskinfo]?
+    var filterData:[Taskinfo]?
     var items:[NSManagedObject] = []
     var addDays = "0"
 
@@ -31,22 +32,25 @@ class InfoTaskTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         loadCoreData()
+        filterData = Tasks
+        searchBar.delegate = self
+        
     }
     
     
     //sorting
     
     @IBAction func sortTitle(_ sender: UIBarButtonItem) {
-        let sortTask = self.Tasks!
-        self.Tasks! = sortTask.sorted{$0.name < $1.name}
+        let sortTask = self.filterData!
+        self.filterData! = sortTask.sorted{$0.name < $1.name}
         self.tableView.reloadData()
     }
     
     
     @IBAction func sortDays(_ sender: UIBarButtonItem) {
         
-        let sortDays = self.Tasks!
-        self.Tasks! = sortDays.sorted{$0.days < $1.days}
+        let sortDate = self.filterData!
+        self.filterData! = sortDate.sorted{$0.date < $1.date}
         self.tableView.reloadData()
     }
     
@@ -67,7 +71,8 @@ class InfoTaskTableViewController: UITableViewController {
                    for task in Taskres as! [NSManagedObject] {
                        let taskname = task.value(forKey: "name") as! String
                        let taskdays = task.value(forKey: "days") as! Int
-                       Tasks?.append(Taskinfo(name: taskname, days: Int(taskdays) ))
+                    let taskdate = task.value(forKey: "date") as? String
+                       Tasks?.append(Taskinfo(name: taskname, days: Int(taskdays),date: taskdate ?? ""))
                    }
                }
 
@@ -86,7 +91,7 @@ class InfoTaskTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return Tasks?.count ?? 0
+        return filterData?.count ?? 0
     }
 
     
@@ -97,12 +102,12 @@ class InfoTaskTableViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-         let task = Tasks![indexPath.row]
+         let task = filterData![indexPath.row]
          let cell = tableView.dequeueReusableCell(withIdentifier: "cellTask")
             
         // Configure the cell...
                 cell?.textLabel?.text = task.name
-        cell?.detailTextLabel?.text = "\(task.days) days + \(task.countDays) (days completed)"
+        cell?.detailTextLabel?.text = "\(task.days) days + \(task.countDays) (days completed) \(task.date)"
         
         if Tasks?[indexPath.row].countDays == self.Tasks?[indexPath.row].days{
             cell?.backgroundColor = UIColor.gray
@@ -234,4 +239,16 @@ class InfoTaskTableViewController: UITableViewController {
     }
     
 
+}
+
+extension InfoTaskTableViewController: UISearchBarDelegate{
+    //searchBar action
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        filterData = searchText.isEmpty ? Tasks : Tasks?.filter({ (item: Taskinfo) -> Bool in
+            return item.name.range(of: searchText, options: .caseInsensitive) != nil
+        })
+        
+        tableView.reloadData()
+    }
 }

@@ -30,7 +30,11 @@ class TaskViewController: UIViewController {
     @IBAction func addTask(_ sender: UIButton) {
                let name = nameTextfld.text ?? ""
                let days = daystextfld.text ?? ""
-               let task = Taskinfo(name: name, days: Int(days) ?? 0)
+        let date = NSDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE,MMM,dd HH:mm:ss"
+        let dateString = dateFormatter.string(from: date as Date)
+               let task = Taskinfo(name: name, days: Int(days) ?? 0, date: dateString)
                Tasks?.append(task)
                nameTextfld.text = ""
                daystextfld.text = ""
@@ -81,7 +85,8 @@ class TaskViewController: UIViewController {
                 for task in Taskres as! [NSManagedObject] {
                     let taskname = task.value(forKey: "name") as! String
                     let taskdays = task.value(forKey: "days") as! Int
-                    Tasks?.append(Taskinfo(name: taskname, days: Int(taskdays) ))
+                    let date = task.value(forKey: "date") as? String
+                    Tasks?.append(Taskinfo(name: taskname, days: Int(taskdays),date: date ?? "" ))
                 }
             }
 
